@@ -1,0 +1,3 @@
+"","Model","Rt_RMSE_Median","Rt_RMSE_Q1","Rt_RMSE_Q3","Rt_sMAPE_Median","Rt_sMAPE_Q1","Rt_sMAPE_Q3","Rt_PA_Median","Rt_PA_Q1","Rt_PA_Q3","Case_RMSE_Median","Case_RMSE_Q1","Case_RMSE_Q3","Case_sMAPE_Median","Case_sMAPE_Q1","Case_sMAPE_Q3","Case_PA_Median","Case_PA_Q1","Case_PA_Q3"
+"1","Ensemble",0.08,0.08,0.08,5.78,4.85,6.54,94.45,93.76,95.32,12.67,6.17,20.83,22.35,17.62,27.38,80.95,77.78,84.66
+"2","EpiNow2",0.24,0.24,0.24,14.39,11.56,18.62,87.04,84.38,89.41,18.1,8.4,30.51,28.14,22.51,32.21,77.27,75.21,81.05
