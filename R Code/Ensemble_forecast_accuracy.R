@@ -212,8 +212,7 @@ rt_plot <- ggplot(combined_data, aes(x = Date)) +
   theme(legend.position = "bottom")  # No legend for this plot
 
 
-# Print the plot to check it
-print(rt_plot)
+
 
 
 
@@ -257,15 +256,15 @@ case_plot <- ggplot(combined_data, aes(x = Date)) +
   )+
   scale_y_continuous(limits = function(x) c(0, max(x) + 1), breaks = function(x) pretty(x, n = 4)) +
   theme(legend.position = "bottom") 
+
+# Print the plot to check it
+print(rt_plot)
+                     
 # Print the plot to check it
 print(case_plot)
 
 
-#ggsave("Ensemble_Rt_forecast_wave2_14days_ahead_1_46_initial.svg",rt_plot,width = 12, height = 12)
-#ggsave("Ensemble_case_forecast_wave2_14days_ahead_1_46.svg",case_plot,width = 12, height = 12)
-
 summary_stats_weekly[,8:10]
 summary_stats[,8:10]
 
-# write.csv(summary_stats_weekly,"Ensemble_summary_stats_weekly_wave2_14days.csv")
- #write.csv(summary_stats,"Ensemble_initial_Rt_summary_stats_wave2_14days.csv")
+
