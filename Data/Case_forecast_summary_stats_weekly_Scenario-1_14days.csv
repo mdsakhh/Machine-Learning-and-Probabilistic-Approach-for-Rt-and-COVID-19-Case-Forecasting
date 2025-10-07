@@ -1,3 +1,0 @@
-"","Model","Case_RMSE_Median","Case_RMSE_Q1","Case_RMSE_Q3","Case_sMAPE_Median","Case_sMAPE_Q1","Case_sMAPE_Q3","Case_PA_Median","Case_PA_Q1","Case_PA_Q3"
-"1","Ensemble",55.38,34.81,86.05,17.5,13.9,23.61,84.2,80.8,86.91
-"2","EpiNow2",130.07,53.34,462.59,36.22,27.94,52,75.43,72.44,78.72
