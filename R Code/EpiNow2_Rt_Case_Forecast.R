@@ -138,7 +138,10 @@ estimate_Rt <- function(covid_data, start_date, end_date) {
   n_chains<-2
   n_samples<-2000
   n_warmup<-500
-  estimates <- epinow(reported_cases = reported_cases, generation_time = generation_time_opts(generation_time), delays = delay_opts(incubation_period+reporting_delay),
+ estimates <- epinow(data  = reported_cases, 
+                      generation_time = gt_opts(generation_time), 
+                      rt = rt_opts(prior = LogNormal(mean = 1, sd = 0.1)),
+                      delays = delay_opts(incubation_period+reporting_delay),
                       stan=EpiNow2::stan_opts(
                         cores=4,
                         chains=n_chains,
@@ -150,12 +153,10 @@ estimate_Rt <- function(covid_data, start_date, end_date) {
                         samples=n_samples,
                         warmup=n_warmup
                       ),
-                      horizon = 21,
-                      CrIs = c(0.95),
-                      verbose=interactive())
-  
-  
- 
+                      forecast = forecast_opts(horizon = 0)
+                      ,
+                      CrIs=c(0.95))
+   
   Rt_case_dt <- estimates$estimates$summarised
   
   Rt_case_dt[, date := as.Date(date)]
@@ -231,5 +232,6 @@ head(results_df)
 Rt_county<-results_df
 
 ##########################
+
 
 
