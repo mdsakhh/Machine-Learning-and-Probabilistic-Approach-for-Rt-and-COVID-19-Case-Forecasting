@@ -246,26 +246,26 @@ rt_forecast<-function(forecast_start_date,forecast_end_date){
     
     # Filter test data for the current County code up to the day before forecasting starts
     # to create the lagged data for forecasting
-    County_test_data <- test_data %>% filter(County == county & Date <= forecast_start_date)
+    County_test_data <- test_data %>% filter(County == county & Date < forecast_start_date)
     
     if (nrow(County_test_data) >= optimal_lag) {
       # Ensure to include 'day_of_year' in the forecast model input
-      initial_lags_data <- County_test_data %>% tail(optimal_lag+1) %>% select(all_of(estimation_method), day_of_year)
-      initial_lags <- c(head(initial_lags_data[,1], -1), tail(initial_lags_data$day_of_year, 1))
-      #initial_lags <- c(head(initial_lags_data[,1], -1), tail(initial_lags_data$day_of_year))
-      initial_lags <- t(as.matrix(initial_lags))
+      initial_lags_data <- County_test_data %>% tail(optimal_lag) %>% select(all_of(estimation_method))
+      initial_lags<-rev(c(initial_lags_data$Rt_EpiNow))
+      lag_features<-c(initial_lags,yday(forecast_start_date))
+      lag_features <- t(as.matrix(lag_features))
       
       forecasts <- numeric(as.integer(forecast_end_date - forecast_start_date) + 1)
       
       # Perform recursive forecasting
       for (i in 1:length(forecasts)) {
-        forecast_value <- predict(final_model, newdata = xgb.DMatrix(data = initial_lags))
+        forecast_value <- predict(final_model, newdata = xgb.DMatrix(data = lag_features))
         forecasts[i] <- forecast_value
         
         # Update lags: move everything one step back and insert new forecast at the end
-        initial_lags_data <- rbind(initial_lags_data[-1, ], c(forecast_value, yday(forecast_start_date + i)))
-        initial_lags <- c(head(initial_lags_data[,1], -1), tail(initial_lags_data$day_of_year, 1))
-        initial_lags <- t(as.matrix(initial_lags))
+        initial_lags <- c(forecast_value,initial_lags[-length(initial_lags)])
+        lag_features<-c(initial_lags,yday(i+forecast_start_date))
+        lag_features <- t(as.matrix(lag_features))
       }
       
       # Prepare results data frame for this County code
@@ -285,6 +285,7 @@ rt_forecast<-function(forecast_start_date,forecast_end_date){
   
   return(all_results)
 }
+
 
 ##############################################################################################################
 ##############################################################################################################
@@ -343,52 +344,67 @@ covid_data_SC <- covid_data %>%
 
 ###################################################################################
 ###################################################################################
-
-
 ###################################################################################
 set.seed(100)
 # Parameters for the gamma distribution (serial interval)
 # Given mean, standard deviation, and max value
-# mean_val <- 4.7
-# sd_val <- 2.9
-# max_val <- 10
+mean_val <- 4.7
+sd_val <- 2.9
+max_val <- 10
 # 
-# # Calculate the shape and rate parameters for the gamma distribution
-# shape_param <- (mean_val^2) / (sd_val^2)
-# rate_param <- mean_val / (sd_val^2)
+# Calculate the shape and rate parameters for the gamma distribution
+shape_param <- (mean_val^2) / (sd_val^2)
+rate_param <- mean_val / (sd_val^2)
 
-# geenrationn distribution using the gamma pdf
-generation_dist<-c(0.04, 0.13, 0.17, 0.17, 0.15, 0.12, 0.088, 0.063, 0.044, 0.03)
+# days
+days<-1:max_val
 
-# Recursive case forecasting function for each County code
-recursive_forecast <- function(historical_cases, rt_forecasts, generation_dist, forecast_start_date) {
-  # Initialize an empty vector for the forecasted cases
-  forecasted_cases <- numeric(length(rt_forecasts$Date))
-  lower_bound <- numeric(length(rt_forecasts$Date))
-  upper_bound <- numeric(length(rt_forecasts$Date))
+# Gamma PMF approximation using difference of CDFs (discretized PDF)
+generation_dist <- pgamma(days, shape = shape_param, rate = rate_param) - 
+  pgamma(days - 1, shape = shape_param, rate = rate_param)
+
+# Normalize to ensure it sums to 1 (sometimes due to tail approximation, slight adjustment is needed)
+generation_dist <- rev(generation_dist / sum(generation_dist))
+
+
+# Recursive case forecasting function with full path simulation
+recursive_forecast <- function(historical_cases, rt_forecasts, generation_dist, forecast_start_date, n_sim = 1000) {
+  # number of forecast steps
+  n_steps <- length(rt_forecasts$Date)
   
+  # Matrix to store all simulation paths
+  sim_cases <- matrix(0, nrow = n_steps, ncol = n_sim)
   
-  forecast_idx<-which(historical_cases$Date==forecast_start_date)
-  historical_case<-historical_cases$Daily_Cases[1:(forecast_idx-1)]
-  #historical_case<-historical_cases$Daily_Cases
-  # Loop through each Rt forecast date
-  for (i in seq_along(rt_forecasts$Date)) {
-    Rt <- rt_forecasts$Rt_forecast[i]
+  # Initial historical cases up to the forecast start date
+  forecast_idx <- which(historical_cases$Date == (forecast_start_date - 1)) + 1
+  historical_case <- historical_cases$Daily_Cases[1:(forecast_idx-1)]
+  
+  # Run n_sim independent simulations
+  for (sim in 1:n_sim) {
+    hist_cases_sim <- historical_case
     
-    # Update historical cases with the forecasted case from the previous step
-    if (i > 1) {
-      historical_case <- c(historical_case, forecasted_cases[i-1])
+    for (i in seq_len(n_steps)) {
+      Rt <- rt_forecasts$Rt_forecast[i]
+      
+      # Infectiousness from past cases
+      infectious <- sum(tail(hist_cases_sim, max_val) * generation_dist)
+      lambda <- Rt * infectious
+      
+      # Draw one Poisson sample for this path
+      new_case <- rpois(1, lambda)
+      
+      # Store forecasted case for this trajectory
+      sim_cases[i, sim] <- new_case
+      
+      # Update historical cases for the next step
+      hist_cases_sim <- c(hist_cases_sim, new_case)
     }
-    
-    # Calculate the infectious value (lambda) using past historical cases and generation_dist
-    infectious <- sum(historical_case[(forecast_idx-11+i):(forecast_idx+i-2)]*generation_dist)
-    lambda <- Rt * infectious
-    
-    # Forecast the number of cases using a Poisson distribution
-    forecasted_cases[i] <- round(mean(rpois(1000, lambda),na.rm=TRUE))
-    lower_bound[i] <- round(quantile(rpois(1000, lambda), 0.025,na.rm=TRUE))  # 2.5th percentile
-    upper_bound[i] <- round(quantile(rpois(1000, lambda), 0.975,na.rm=TRUE))  # 97.5th percentile
   }
+  
+  # Summarize across simulations: mean and 95% CI
+  forecasted_cases <- rowMeans(sim_cases)
+  lower_bound <- apply(sim_cases, 1, quantile, probs = 0.025)
+  upper_bound <- apply(sim_cases, 1, quantile, probs = 0.975)
   
   return(data.frame(
     Date = rt_forecasts$Date,
@@ -397,6 +413,8 @@ recursive_forecast <- function(historical_cases, rt_forecasts, generation_dist, 
     Case_upper95 = upper_bound
   ))
 }
+
+######################################################################################
 
 # Filter historical cases based on the provided date range
 actual_case_data_for_forecast <- covid_data_SC %>% 
@@ -466,5 +484,6 @@ while (current_start_date <= overall_end_date) {
   # Move the start date forward by 5 days
   current_start_date <- current_start_date + forecast_step
 }
+
 
 
