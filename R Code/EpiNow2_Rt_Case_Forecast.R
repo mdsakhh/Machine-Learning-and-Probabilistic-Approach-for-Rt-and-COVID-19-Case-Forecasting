@@ -36,10 +36,10 @@ set.seed(seed = seed)
 # Read COVID-19 data at the county code level
 
 # Read COVID-19 data at the county level
-covid_data_2020 <- read.csv("us-counties_rolling-average-2020.csv")  #load the COVID-19 county level data for the year 2020
-covid_data_2021 <- read.csv("us-counties_rolling-average-2021.csv")  #load the COVID-19 county level data for the year 2021
-covid_data_2022 <- read.csv("us-counties_rolling-average-2022.csv")  #load the COVID-19 county level data for the year 2022
-covid_data_2023 <- read.csv("us-counties_rolling-average-2023.csv")  #load the COVID-19 county level data for the year 2023
+covid_data_2020 <- read.csv("us-counties-2020.csv")  #load the COVID-19 county level data for the year 2020
+covid_data_2021 <- read.csv("us-counties-2021.csv")  #load the COVID-19 county level data for the year 2021
+covid_data_2022 <- read.csv("us-counties-2022.csv")  #load the COVID-19 county level data for the year 2022
+covid_data_2023 <- read.csv("us-counties-2023.csv")  #load the COVID-19 county level data for the year 2023
 
 
 covid_data_2020$date<-as.Date(covid_data_2020$date, format = "%m/%d/%Y")  # format the date
@@ -232,6 +232,7 @@ head(results_df)
 Rt_county<-results_df
 
 ##########################
+
 
 
 
