@@ -34,7 +34,7 @@ library(patchwork)
 # -----------------------------
 # Set working directory
 # -----------------------------
-setwd("C:/Users/mdsakhh/Box/BoxPHI-PHMR Projects/Sakhawat/Manuscripts/Epidemics_Submission/github_data_code")
+setwd("my_directory_for_case_data")
 
 # -----------------------------
 # Helper: robust date parsing
@@ -49,7 +49,7 @@ parse_date_safe <- function(x) {
 # Load and prepare data (SC only)
 # -----------------------------
 load_and_prepare_data <- function(year) {
-  filename <- paste0("us-counties_rolling-average-", year, ".csv")
+  filename <- paste0("us-counties-", year, ".csv")
   
   read_csv(filename, show_col_types = FALSE) %>%
     dplyr::mutate(date = parse_date_safe(date)) %>%
@@ -423,3 +423,4 @@ cat("  - cv_holdout20_1day_supp_table_MAE_RMSE.csv\n")
 cat("Figure:\n")
 cat("  - cv_holdout20_1day_MAE_top_RMSE_bottom.(png/pdf/svg)\n")
 cat("\n=== DONE ===\n")
+
