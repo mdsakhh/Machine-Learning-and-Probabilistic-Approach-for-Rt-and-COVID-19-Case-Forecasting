@@ -18,12 +18,12 @@ set.seed(100)
 
 # Load the Rt forecasts data from six different model
 
-forecast_xgboost<-read.csv("Rt_forecast_XGB.csv")
-forecast_xgboost_smooth<-read.csv("Rt_forecast_XGB_smooth.csv")
-forecast_RF<-read.csv("Rt_forecast_RF.csv")
-forecast_RF_smooth<-read.csv("Rt_forecast_RF_smooth.csv")
-forecast_regression<-read.csv("Rt_forecast_Reg.csv")
-forecast_regression_smooth<-read.csv("Rt_forecast_Reg_smooth.csv")
+forecast_xgboost<-read.csv("Forecast_XGB.csv")
+forecast_xgboost_smooth<-read.csv("Forecast_XGB_Smooth.csv")
+forecast_RF<-read.csv("Forecast_RF.csv")
+forecast_RF_smooth<-read.csv("Forecast_RF_Smooth.csv")
+forecast_regression<-read.csv("Forecast_Reg.csv")
+forecast_regression_smooth<-read.csv("Forecast_Reg_Smooth.csv")
 
 #Convert the date into month/day/year format
 #use one of the following conversion steps (after conversion, ensure the Date format is correct, if not load the data again and use the second approach for conversion)
@@ -296,4 +296,5 @@ print(all_forecast_results)
 # save Rt and COVID-19 case forecast data in csv file
 
 #write.csv(all_forecast_results,"Ensemble_forecast.csv")
+
 
