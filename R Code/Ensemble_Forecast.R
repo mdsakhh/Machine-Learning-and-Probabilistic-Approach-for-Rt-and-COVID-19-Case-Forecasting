@@ -103,10 +103,10 @@ forecast_end_date <- as.Date(end_date)
 
 ##############
 # Read COVID-19 data at the county level
-covid_data_2020 <- read.csv("us-counties_rolling-average-2020.csv")  #load the COVID-19 county level data for the year 2020
-covid_data_2021 <- read.csv("us-counties_rolling-average-2021.csv")  #load the COVID-19 county level data for the year 2021
-covid_data_2022 <- read.csv("us-counties_rolling-average-2022.csv")  #load the COVID-19 county level data for the year 2022
-covid_data_2023 <- read.csv("us-counties_rolling-average-2023.csv")  #load the COVID-19 county level data for the year 2023
+covid_data_2020 <- read.csv("sc-counties-2020.csv")  #load the COVID-19 county level data for the year 2020
+covid_data_2021 <- read.csv("sc-counties-2021.csv")  #load the COVID-19 county level data for the year 2021
+covid_data_2022 <- read.csv("sc-counties-2022.csv")  #load the COVID-19 county level data for the year 2022
+covid_data_2023 <- read.csv("sc-counties-2023.csv")  #load the COVID-19 county level data for the year 2023
 
 
 covid_data_2020$Date<-as.Date(covid_data_2020$date, format = "%m/%d/%Y")  # format the date
@@ -295,6 +295,7 @@ print(all_forecast_results)
 
 # save Rt and COVID-19 case forecast data in csv file
 
-#write.csv(all_forecast_results,"Ensemble_forecast.csv")
+#write.csv(all_forecast_results,"Forecast_Ensemble.csv")
+
 
 
