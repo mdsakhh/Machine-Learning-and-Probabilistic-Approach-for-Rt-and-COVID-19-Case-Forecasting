@@ -14,7 +14,6 @@ library(Metrics)
 library(ggplot2)
 library(reshape2)
 library(lubridate)
-library(EpiNow2)
 library(zoo)
 ##############################################################################
 
@@ -286,7 +285,6 @@ rt_forecast<-function(forecast_start_date,forecast_end_date){
   return(all_results)
 }
 
-
 ##############################################################################################################
 ##############################################################################################################
 
@@ -298,10 +296,10 @@ forecast_end_date <- as.Date(end_date)
 
 ##############
 # Read COVID-19 data at the county level
-covid_data_2020 <- read.csv("us-counties_rolling-average-2020.csv")  #load the COVID-19 county level data for the year 2020
-covid_data_2021 <- read.csv("us-counties_rolling-average-2021.csv")  #load the COVID-19 county level data for the year 2021
-covid_data_2022 <- read.csv("us-counties_rolling-average-2022.csv")  #load the COVID-19 county level data for the year 2022
-covid_data_2023 <- read.csv("us-counties_rolling-average-2023.csv")  #load the COVID-19 county level data for the year 2023
+covid_data_2020 <- read.csv("sc-counties-2020.csv")  #load the COVID-19 county level data for the year 2020
+covid_data_2021 <- read.csv("sc-counties-2021.csv")  #load the COVID-19 county level data for the year 2021
+covid_data_2022 <- read.csv("sc-counties-2022.csv")  #load the COVID-19 county level data for the year 2022
+covid_data_2023 <- read.csv("sc-counties-2023.csv")  #load the COVID-19 county level data for the year 2023
 
 
 covid_data_2020$Date<-as.Date(covid_data_2020$date, format = "%m/%d/%Y")  # format the date
@@ -485,5 +483,6 @@ while (current_start_date <= overall_end_date) {
   current_start_date <- current_start_date + forecast_step
 }
 
+# now save the all_forecast_results as csv named as Forecast_XGB
 
 
