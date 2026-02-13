@@ -86,7 +86,7 @@ Forecast results for Rt and COVID-19 cases were generated using various models, 
 
 ### Inputs
 
-- **Rt_Estimates_Initial.csv** — Initial Rt estimates from Step 2.
+- **Rt_Estimates_Initial.csv** or **Rt_Estimates_Smooth.csv** — Rt estimates from Step 2 or Step 3. The forecasting is performed separately for both datasets.
 - **SC county-level COVID-19 case data** — CSV files from the `Covid_Case_Data_SC_Counties/` folder.
 
 ### Setup
@@ -94,7 +94,7 @@ Forecast results for Rt and COVID-19 cases were generated using various models, 
 1. Set the working directory and load the data:
 ```r
    setwd("path/to/your/data/directory")
-   Rt_data <- read.csv("Rt_estimates_initial.csv")
+   Rt_data <- read.csv("Rt_estimates_initial.csv")  # or "Rt_estimates_smooth.csv"
 ```
 
 2. Update the **training period** dates:
@@ -130,8 +130,7 @@ write.csv(all_forecast_results, "Forecast_XGB.csv", row.names = FALSE)
 
 The output contains columns for County, Date, actual and forecasted Rt, actual and forecasted COVID-19 cases, and 95% confidence intervals for Rt and COVID-19 case forecasts.
 
-> **Note:** The same procedure applies for Random Forest (RF) and Regression models — only the model fitting and prediction functions differ. Update the training/forecasting dates and forecast step accordingly for each model.
-
+> **Note:** The same procedure applies for Random Forest (RF) and Regression models — only the model fitting and prediction functions differ. Update the training/forecasting dates and forecast step accordingly for each model. Run each model separately for both `Rt_Estimates_Initial.csv` and `Rt_Estimates_Smooth.csv` to generate the two sets of forecasts.
 
 
 # Machine-Learning-and-Probabilistic-Approach-for-Rt-and-COVID-19-Case-Forecasting
