@@ -132,6 +132,63 @@ The output contains columns for County, Date, actual and forecasted Rt, actual a
 
 > **Note:** The same procedure applies for Random Forest (RF) and Regression models — only the model fitting and prediction functions differ. Update the training/forecasting dates and forecast step accordingly for each model. Run each model separately for both `Rt_Estimates_Initial.csv` and `Rt_Estimates_Smooth.csv` to generate the two sets of forecasts.
 
+## 5. Ensemble Forecasts
+
+The ensemble method combines Rt forecasts from all six individual models (XGBoost, Random Forest, and Regression — each run on both `Rt_Estimates_Initial` and `Rt_Estimates_Smooth`) to produce a weighted ensemble forecast for Rt and COVID-19 cases.
+
+### Inputs
+
+- **Forecast_XGB.csv** — XGBoost forecasts using initial Rt estimates.
+- **Forecast_XGB_Smooth.csv** — XGBoost forecasts using smoothed Rt estimates.
+- **Forecast_RF.csv** — Random Forest forecasts using initial Rt estimates.
+- **Forecast_RF_Smooth.csv** — Random Forest forecasts using smoothed Rt estimates.
+- **Forecast_Reg.csv** — Regression forecasts using initial Rt estimates.
+- **Forecast_Reg_Smooth.csv** — Regression forecasts using smoothed Rt estimates.
+- **SC county-level COVID-19 case data** — CSV files from the `Covid_Case_Data_SC_Counties/` folder.
+
+### Setup
+
+1. Set the working directory and load all six forecast files:
+```r
+   setwd("path/to/your/data/directory")
+```
+
+2. Update the **training period** and **forecasting period** dates:
+```r
+   train_start_date <- as.Date("2020-06-01")
+   train_end_date <- as.Date("2020-11-10")
+
+   start_date <- "2020-11-11"
+   end_date <- "2021-02-02"
+```
+
+3. Set the **forecast step** (horizon) to 7, 14, or 21 days:
+```r
+   forecast_step <- 7  # change to 14 or 21 as needed
+```
+
+4. Update the **overall forecasting window**:
+```r
+   overall_start_date <- as.Date("2020-11-11")
+   overall_end_date <- as.Date("2021-02-02")
+```
+
+### What the Code Does
+
+- **Weight calculation:** Computes Percentage Agreement (PA) between actual and forecasted Rt for each of the six models. The PA-based weights are calculated as each model's PA divided by the sum of all models' PA values.
+- **Ensemble Rt forecast:** Produces a weighted combination of Rt forecasts from all six models.
+- **COVID-19 case forecast:** Converts the ensemble Rt forecasts into COVID-19 case forecasts using a Poisson stochastic process with a discretized gamma serial interval distribution (mean = 4.7, SD = 2.9) and 1,000 Monte Carlo simulations.
+- **Rolling forecast windows:** The ensemble Rt and COVID-19 case forecasts are performed in rolling windows of `forecast_step` days from `overall_start_date` to `overall_end_date`.
+
+### Output
+
+After running, save the results:
+```r
+write.csv(all_forecast_results, "Forecast_Ensemble.csv", row.names = FALSE)
+```
+
+The output contains columns for County, Date, actual and ensemble-forecasted Rt, actual and forecasted COVID-19 cases, and 95% confidence intervals for COVID-19 case forecasts.
+
 •	Forecast Summary Statistics: Scenario-based summary statistics for COVID-19 cases and Rt forecasts.
 3. Figures
 The Figures folder contains:
