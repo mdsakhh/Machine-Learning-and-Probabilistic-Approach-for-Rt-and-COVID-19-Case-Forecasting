@@ -189,11 +189,16 @@ write.csv(all_forecast_results, "Forecast_Ensemble.csv", row.names = FALSE)
 
 The output contains columns for County, Date, actual and ensemble-forecasted Rt, actual and forecasted COVID-19 cases.
 
-•	Forecast Summary Statistics: Scenario-based summary statistics for COVID-19 cases and Rt forecasts.
-3. Figures
+## 6. Forecast Summary Statistics
+
+The `Forecast_Accuracy_Summary/` folder contains scenario-based summary statistics for Rt and COVID-19 case forecasts. These include accuracy metrics (e.g., Percentage Agreement, RMSE, MAE) computed across all models and the ensemble method for each forecast scenario (7-day, 14-day, and 21-day horizons).
+
+## 7. Figures
+
 The Figures folder contains:
-•	Main Figures (Fig. 1, Fig. 2, Fig. 3): Visualizations used in the primary analysis and manuscript.
-•	Supplementary Figures (Fig. S1 - Fig. S27): Additional visualizations supporting the analysis.
+
+- **Main Figures (Fig. 1, Fig. 2, Fig. 3):** Visualizations used in the primary analysis and manuscript.
+- **Supplementary Figures (Fig. S1 – Fig. S27):** Additional visualizations supporting the analysis.
 
 Contact:
 For questions, please contact:
