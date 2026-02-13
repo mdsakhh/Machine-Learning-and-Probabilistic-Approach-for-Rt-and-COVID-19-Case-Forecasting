@@ -128,8 +128,6 @@ rt_forecast<-function(forecast_start_date,forecast_end_date){
   final_model_data <- Rt_final_model_data %>%
     dplyr::select(Date, all_of(estimation_method), County, day_of_year)
   
-  
-  
   # Use optimal lag for forecasting
   results_final_model <- fit_regression_cv(final_model_data, lags = optimal_lag, estimation_method,k=1,method="none")
   final_model <- results_final_model$model
@@ -216,10 +214,10 @@ forecast_end_date <- as.Date(end_date)
 
 ##############
 # Read COVID-19 data at the county level
-covid_data_2020 <- read.csv("us-counties_rolling-average-2020.csv")  #load the COVID-19 county level data for the year 2020
-covid_data_2021 <- read.csv("us-counties_rolling-average-2021.csv")  #load the COVID-19 county level data for the year 2021
-covid_data_2022 <- read.csv("us-counties_rolling-average-2022.csv")  #load the COVID-19 county level data for the year 2022
-covid_data_2023 <- read.csv("us-counties_rolling-average-2023.csv")  #load the COVID-19 county level data for the year 2023
+covid_data_2020 <- read.csv("sc-counties-2020.csv")  #load the COVID-19 county level data for the year 2020
+covid_data_2021 <- read.csv("sc-counties-2021.csv")  #load the COVID-19 county level data for the year 2021
+covid_data_2022 <- read.csv("sc-counties-2022.csv")  #load the COVID-19 county level data for the year 2022
+covid_data_2023 <- read.csv("sc-counties-2023.csv")  #load the COVID-19 county level data for the year 2023
 
 
 covid_data_2020$Date<-as.Date(covid_data_2020$date, format = "%m/%d/%Y")  # format the date
@@ -228,8 +226,6 @@ covid_data_2022$Date<-covid_data_2022$date
 covid_data_2023$Date<-covid_data_2023$date
 
 covid_data_all<-rbind(covid_data_2020,covid_data_2021,covid_data_2022,covid_data_2023)   # combine the data from 2020 and 2021
-
-
 
 # Calculating the rolling average
 # we use the 7 days rolling average data
@@ -358,7 +354,6 @@ case_forecast <- function(forecast_start_date, forecast_end_date) {
   return(forcasted_cases_all_combine)
 }
 
-
 forecast_step<-7
 
 # Define the start and end Date for the forecasting period
@@ -399,6 +394,8 @@ while (current_start_date <= overall_end_date) {
   # Move the start date forward by 5 days
   current_start_date <- current_start_date + forecast_step
 }
+# now save the all_forecast_results as csv named as Forecast_Reg
+
 
 
 
