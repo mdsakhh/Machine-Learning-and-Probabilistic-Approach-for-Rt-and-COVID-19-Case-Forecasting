@@ -177,7 +177,7 @@ The ensemble method combines Rt forecasts from all six individual models (XGBoos
 
 - **Weight calculation:** Computes Percentage Agreement (PA) between actual and forecasted Rt for each of the six models. The PA-based weights are calculated as each model's PA divided by the sum of all models' PA values.
 - **Ensemble Rt forecast:** Produces a weighted combination of Rt forecasts from all six models.
-- **COVID-19 case forecast:** Converts the ensemble Rt forecasts into COVID-19 case forecasts using a Poisson stochastic process with a discretized gamma serial interval distribution (mean = 4.7, SD = 2.9) and 1,000 Monte Carlo simulations.
+- **COVID-19 case forecast:** Converts the ensemble Rt forecasts into COVID-19 case forecasts using a Poisson stochastic process with a discretized gamma serial interval distribution.
 - **Rolling forecast windows:** The ensemble Rt and COVID-19 case forecasts are performed in rolling windows of `forecast_step` days from `overall_start_date` to `overall_end_date`.
 
 ### Output
@@ -187,7 +187,7 @@ After running, save the results:
 write.csv(all_forecast_results, "Forecast_Ensemble.csv", row.names = FALSE)
 ```
 
-The output contains columns for County, Date, actual and ensemble-forecasted Rt, actual and forecasted COVID-19 cases, and 95% confidence intervals for COVID-19 case forecasts.
+The output contains columns for County, Date, actual and ensemble-forecasted Rt, actual and forecasted COVID-19 cases.
 
 •	Forecast Summary Statistics: Scenario-based summary statistics for COVID-19 cases and Rt forecasts.
 3. Figures
