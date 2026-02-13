@@ -4,18 +4,14 @@ setwd("My_directory")
 
 ######################################################
 #install packages
-#install.packages("EpiEstim")
 #install.packages("tidyverse")
 #install.packages("maps")
 #install.packages("zoo")
-#install.packages("EpiNow2")
 # Load necessary libraries
 #library(DT)
 library(maps)
 library(zoo)
 library(ggplot2)
-library(EpiEstim)
-library(EpiNow2)
 # Load necessary libraries
 library(dplyr)
 library(tidyr)
@@ -106,23 +102,13 @@ fit_and_predict <- function(response_var) {
   return(fitted_values_by_date)
 }
 
-
-
-
 ####################################################################
-
-
-
-
-
 predicted_Rt <- fit_and_predict("Rt_forecast")
 predicted_case<-fit_and_predict("Case_forecast")
-
-
 
 Rt_county$Rt_forecast<-predicted_Rt$Fitted_Rt
 Rt_county$Case_forecast<-predicted_case$Fitted_Rt
 
+write.csv(Rt_county,"Rt_Estimates_Smooth.csv")
 
-write.csv(Rt_county,"EpiNow2_Rt_estimates_spatial_smooth.csv")
 
