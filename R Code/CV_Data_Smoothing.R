@@ -46,14 +46,14 @@ parse_date_safe <- function(x) {
 }
 
 # -----------------------------
-# Load and prepare data (SC only)
+# Load and prepare data (SC only) — uses already-filtered sc-counties-YYYY.csv
+# Assumes your working directory is where the sc files are saved
 # -----------------------------
 load_and_prepare_data <- function(year) {
-  filename <- paste0("us-counties-", year, ".csv")
-  
-  read_csv(filename, show_col_types = FALSE) %>%
+  filename <- paste0("sc-counties-", year, ".csv")
+
+  readr::read_csv(filename, show_col_types = FALSE) %>%
     dplyr::mutate(date = parse_date_safe(date)) %>%
-    dplyr::filter(state == "South Carolina") %>%
     dplyr::filter(county != "Unknown") %>%
     dplyr::mutate(
       cases = as.numeric(cases),
@@ -61,6 +61,23 @@ load_and_prepare_data <- function(year) {
       cases = ifelse(cases < 0, 0, cases)
     )
 }
+
+# # -----------------------------
+# # Load and prepare data (SC only) if we use the data for all US counties
+# # -----------------------------
+# load_and_prepare_data <- function(year) {
+#   filename <- paste0("us-counties-", year, ".csv")
+#   
+#   read_csv(filename, show_col_types = FALSE) %>%
+#     dplyr::mutate(date = parse_date_safe(date)) %>%
+#     dplyr::filter(state == "South Carolina") %>%
+#     dplyr::filter(county != "Unknown") %>%
+#     dplyr::mutate(
+#       cases = as.numeric(cases),
+#       cases = ifelse(is.na(cases), 0, cases),
+#       cases = ifelse(cases < 0, 0, cases)
+#     )
+# }
 
 # -----------------------------
 # Complete missing dates (per county) and impute with 0
@@ -423,4 +440,5 @@ cat("  - cv_holdout20_1day_supp_table_MAE_RMSE.csv\n")
 cat("Figure:\n")
 cat("  - cv_holdout20_1day_MAE_top_RMSE_bottom.(png/pdf/svg)\n")
 cat("\n=== DONE ===\n")
+
 
