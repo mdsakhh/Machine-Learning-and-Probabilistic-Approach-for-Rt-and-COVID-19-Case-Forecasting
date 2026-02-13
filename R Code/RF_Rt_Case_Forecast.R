@@ -12,9 +12,7 @@ library(tidyr)
 library(dplyr)
 library(Metrics)
 library(ggplot2)
-library(reshape2)
 library(lubridate)
-library(EpiNow2)
 library(zoo)
 ##############################################################################
 
@@ -23,7 +21,7 @@ train_start_date <- as.Date("2020-06-01")
 train_end_date <- as.Date("2020-11-10")
 
 # Load the Rt estimation data file
-Rt_data <- read.csv("Rt_estimates_initial.csv")
+Rt_data <- read.csv("Rt_Estimates_Initial.csv")
 Rt_data$Date <- as.Date(Rt_data$Date, format = "%m/%d/%Y")
 Rt_data$day_of_year <- yday(Rt_data$Date)
 
@@ -106,7 +104,6 @@ fit_random_forest <- function(train_data, max_lag_values, n_tree_values, max_nod
   return(best_params)
 }
 
-
 # Define values to test for hyperparameter optimization
 max_lag_values <- seq(10, 25, by = 1)  # Test lag values
 # n_tree_values <- c(50,100,150,200,250,300,350,400,450,500)  # Test different numbers of trees
@@ -114,9 +111,6 @@ max_lag_values <- seq(10, 25, by = 1)  # Test lag values
 n_tree_values <- c(100,200,300,400,500)  # Test different numbers of trees
 max_node_values <- c(50,100,150)  # Test different maximum tree nodes
 node_size_values <- c(5,8,10)  # Test different maximum tree nodes
-
-
-
 
 # Specify the estimation method
 estimation_method <- "Rt_EpiNow"
@@ -143,7 +137,6 @@ optimal_lag <- best_params$lag
 ########################### Forecast#########################################################
 # Set up the forecasting interval
 # we will perform 7, 14, and 21 days forecast
-
 
 rt_forecast<-function(forecast_start_date,forecast_end_date){
   
@@ -232,10 +225,10 @@ forecast_end_date <- as.Date(end_date)
 
 ##############
 # Read COVID-19 data at the county level
-covid_data_2020 <- read.csv("us-counties_rolling-average-2020.csv")  #load the COVID-19 county level data for the year 2020
-covid_data_2021 <- read.csv("us-counties_rolling-average-2021.csv")  #load the COVID-19 county level data for the year 2021
-covid_data_2022 <- read.csv("us-counties_rolling-average-2022.csv")  #load the COVID-19 county level data for the year 2022
-covid_data_2023 <- read.csv("us-counties_rolling-average-2023.csv")  #load the COVID-19 county level data for the year 2023
+covid_data_2020 <- read.csv("sc-counties-2020.csv")  #load the COVID-19 county level data for the year 2020
+covid_data_2021 <- read.csv("sc-counties-2021.csv")  #load the COVID-19 county level data for the year 2021
+covid_data_2022 <- read.csv("sc-counties-2022.csv")  #load the COVID-19 county level data for the year 2022
+covid_data_2023 <- read.csv("sc-counties-2023.csv")  #load the COVID-19 county level data for the year 2023
 
 
 covid_data_2020$Date<-as.Date(covid_data_2020$date, format = "%m/%d/%Y")  # format the date
@@ -268,10 +261,7 @@ covid_data<-covid_data_all %>%
 
 covid_data$Daily_Cases<-round(covid_data$Daily_Cases)    # Since the cases are seven days moving average we need round it to nearest integer for EpiNow2 and EpiEstim
 
-
-
 SC_counties<- unique(training_data$County)
-
 
 covid_data_SC <- covid_data %>%
   filter(County %in% SC_counties)
@@ -348,9 +338,6 @@ recursive_forecast <- function(historical_cases, rt_forecasts, generation_dist, 
     Case_upper95 = upper_bound
   ))
 }
-
-
-
 ###################################
 # Filter historical cases based on the provided date range
 actual_case_data_for_forecast <- covid_data_SC %>% 
@@ -379,9 +366,7 @@ case_forecast <- function(forecast_start_date, forecast_end_date) {
   return(forcasted_cases_all_combine)
 }
 
-
 forecast_step<-7
-
 # Define the start and end Date for the forecasting period
 overall_start_date <- as.Date("2020-11-11")
 overall_end_date <- as.Date("2021-02-02")
@@ -421,4 +406,5 @@ while (current_start_date <= overall_end_date) {
   current_start_date <- current_start_date + forecast_step
 }
 
+# now save the all_forecast_results as csv named as Forecast_RF
 
