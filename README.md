@@ -53,7 +53,56 @@
    Save as csv file.
 ```
 
+## 2. Rt Estimation Using EpiNow2
 
+### Setup
+
+1. Set the working directory to the folder where your SC/US county-level COVID-19 data files are saved:
+```r
+   setwd("path/to/your/data/directory")
+```
+
+2. Update the **start and end dates** for the wave you want to analyze. These need to be changed in two places in the code:
+   - Data filtering step (~line 55): `date >= "2022-05-01" & date <= "2023-02-11"`
+   - Rt estimation loop (~line 155): `start_date` and `end_date` assignments
+
+3. To enable **forecasting of Rt and cases**, set the forecast horizon in the `epinow()` call (~line 136):
+```r
+   forecast = forecast_opts(horizon = 14)  # set to desired number of days (7, 14, 21); 0 = no forecast
+```
+
+4. After running, save the results as `Rt_Estimates_Initial`:
+```r
+   Rt_Estimates_Initial <- Rt_county
+   write.csv(Rt_Estimates_Initial, "Rt_Estimates_Initial.csv", row.names = FALSE)
+```
+
+## 3. Spatial Smoothing of Rt Using INLA
+
+This step applies a Besag spatial model via INLA to smooth the initial Rt estimates across SC counties, using sociodemographic covariates.
+
+### Inputs
+
+- **Rt_Estimates_Initial.csv** — Output from the previous EpiNow2 step.
+- **SC_county_sociodemographic_data.csv** — County-level sociodemographic data (provided in the Data folder).
+- SC county shapefiles are downloaded automatically via the `tigris` package.
+
+### Setup
+
+1. Set the working directory to the folder containing `Rt_Estimates_Initial.csv` and `SC_county_sociodemographic_data.csv`:
+```r
+   setwd("path/to/your/data/directory")
+```
+
+2. Run the INLA spatial smoothing script. The code will:
+   - Load the initial Rt estimates and sociodemographic data.
+   - Download SC county shapefiles and build a spatial adjacency matrix.
+   - Fit a Besag spatial model for each date using covariates (age groups, SVI, insurance, race, income, employment, etc.).
+   
+3. The output is saved as:
+```r
+   write.csv(Rt_county, "Rt_Estimates_Smooth.csv", row.names = FALSE)
+```
 
 # Machine-Learning-and-Probabilistic-Approach-for-Rt-and-COVID-19-Case-Forecasting
 Machine Learning and Probabilistic Approach for Rt and COVID-19 Case Forecasting
