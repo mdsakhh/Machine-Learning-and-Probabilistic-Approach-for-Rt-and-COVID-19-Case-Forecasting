@@ -118,7 +118,7 @@ Forecast results for Rt and COVID-19 cases were generated using various models, 
 
 - **Hyperparameter optimization:** Performs cross-validation grid search over lag values, learning rate (`eta`), L2 regularization (`lambda`), and tree depth (`max_depth`) to find the best XGBoost model.
 - **Recursive Rt forecasting:** Trains the final model on data up to the forecast start date, then recursively forecasts Rt for each county over the forecast horizon.
-- **COVID-19 case forecasting:** Converts the Rt forecasts into COVID-19 case forecasts using a Poisson stochastic process with a discretized gamma serial interval distribution (mean = 4.7, SD = 2.9). Case forecasts are generated via 1,000 Monte Carlo simulations to produce mean estimates and 95% confidence intervals.
+- **COVID-19 case forecasting:** Utilize the Rt forecasts into COVID-19 case forecasts using a Poisson stochastic process with a discretized gamma serial interval distribution.
 - **Rolling forecast windows:** The Rt and COVID-19 case forecasts are performed in rolling windows of `forecast_step` days from `overall_start_date` to `overall_end_date`.
 
 ### Output
@@ -128,42 +128,16 @@ After running, save the results:
 write.csv(all_forecast_results, "Forecast_XGB.csv", row.names = FALSE)
 ```
 
-The output contains columns for County, Date, actual and forecasted Rt, actual and forecasted COVID-19 cases, and 95% confidence intervals for Rt and COVID-19 case forecasts.
+The output contains columns for County, Date, actual and forecasted Rt, actual and forecasted COVID-19 cases for Rt, and COVID-19 case forecasts.
 
 > **Note:** The same procedure applies for Random Forest (RF) and Regression models — only the model fitting and prediction functions differ. Update the training/forecasting dates and forecast step accordingly for each model. Run each model separately for both `Rt_Estimates_Initial.csv` and `Rt_Estimates_Smooth.csv` to generate the two sets of forecasts.
 
-
-# Machine-Learning-and-Probabilistic-Approach-for-Rt-and-COVID-19-Case-Forecasting
-Machine Learning and Probabilistic Approach for Rt and COVID-19 Case Forecasting
-Contents
-1. Data
-•	County Level COVID-19 Case Data: COVID-19 daily case data at the county level in South Carolina (SC) was used for the analysis.All the case data files are available at:
-https://github.com/nytimes/covid-19-data/blob/master/us-counties-2020.csv
-https://github.com/nytimes/covid-19-data/blob/master/us-counties-2021.csv
-https://github.com/nytimes/covid-19-data/blob/master/us-counties-2022.csv
-https://github.com/nytimes/covid-19-data/blob/master/us-counties-2023.csv
-The Data folder contains:
-•	Initial Estimation of Rt: Using EpiNow2 R package we obtained the initial estimates of Rt.
-•	Individual Model Forecasts: Forecast results for Rt were generated using various models, including Random Forest (RF), Regression, and EpiNow2.
-•	Ensemble Forecasts: Combined forecasts from multiple models to improve prediction reliability.
-•	COVID-19 Case Forecasts: Generated COVID-19 case forecasts based on the Rt forecasts using Poisson stochastic process.
 •	Forecast Summary Statistics: Scenario-based summary statistics for COVID-19 cases and Rt forecasts.
 3. Figures
 The Figures folder contains:
 •	Main Figures (Fig. 1, Fig. 2, Fig. 3): Visualizations used in the primary analysis and manuscript.
 •	Supplementary Figures (Fig. S1 - Fig. S27): Additional visualizations supporting the analysis.
-4. R Code
-The R Code folder contains: All the R code used for the analysis are provided.
 
-Forecasting Models and Approaches
-The forecasts are generated using:
-•	Machine Learning Models: Random Forest, XGBoost, and Regression models for Rt forecasting.
-•	Ensemble Modeling: Combining forecasts from different models to improve overall predictive performance.
-•	Probabilistic Model: Poisson probabilistic model for generating COVID-19 cases.
-Forecasts are produced for:
-•	7-day horizon
-•	14-day horizon
-•	21-day horizon.
 Contact:
 For questions, please contact:
 Md Sakhawat Hossain
