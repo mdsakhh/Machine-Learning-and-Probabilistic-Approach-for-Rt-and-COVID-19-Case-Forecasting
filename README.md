@@ -80,6 +80,59 @@ This step applies a Besag spatial model via INLA to smooth the initial Rt estima
 ```r
    write.csv(Rt_county, "Rt_Estimates_Smooth.csv", row.names = FALSE)
 ```
+## 4. Individual Model Forecasts
+
+Forecast results for Rt and COVID-19 cases were generated using various models, including Random Forest (RF), Regression, and XGBoost. The forecasting procedure is similar across all models. Below are the instructions using the XGBoost model as an example.
+
+### Inputs
+
+- **Rt_Estimates_Initial.csv** — Initial Rt estimates from Step 2.
+- **SC county-level COVID-19 case data** — CSV files from the `Covid_Case_Data_SC_Counties/` folder.
+
+### Setup
+
+1. Set the working directory and load the data:
+```r
+   setwd("path/to/your/data/directory")
+   Rt_data <- read.csv("Rt_estimates_initial.csv")
+```
+
+2. Update the **training period** dates:
+```r
+   train_start_date <- as.Date("2022-05-01")
+   train_end_date <- as.Date("2023-12-10")
+```
+
+3. Update the **forecasting period** dates:
+```r
+   start_date <- "2022-12-11"
+   end_date <- "2023-03-04"
+```
+
+4. Set the **forecast step** (horizon) to 7, 14, or 21 days:
+```r
+   forecast_step <- 7  # change to 14 or 21 as needed
+```
+
+### What the Code Does
+
+- **Hyperparameter optimization:** Performs cross-validation grid search over lag values, learning rate (`eta`), L2 regularization (`lambda`), and tree depth (`max_depth`) to find the best XGBoost model.
+- **Recursive Rt forecasting:** Trains the final model on data up to the forecast start date, then recursively forecasts Rt for each county over the forecast horizon.
+- **COVID-19 case forecasting:** Converts the Rt forecasts into COVID-19 case forecasts using a Poisson stochastic process with a discretized gamma serial interval distribution (mean = 4.7, SD = 2.9). Case forecasts are generated via 1,000 Monte Carlo simulations to produce mean estimates and 95% confidence intervals.
+- **Rolling forecast windows:** The Rt and COVID-19 case forecasts are performed in rolling windows of `forecast_step` days from `overall_start_date` to `overall_end_date`.
+
+### Output
+
+After running, save the results:
+```r
+write.csv(all_forecast_results, "Forecast_XGB.csv", row.names = FALSE)
+```
+
+The output contains columns for County, Date, actual and forecasted Rt, actual and forecasted COVID-19 cases, and 95% confidence intervals for Rt and COVID-19 case forecasts.
+
+> **Note:** The same procedure applies for Random Forest (RF) and Regression models — only the model fitting and prediction functions differ. Update the training/forecasting dates and forecast step accordingly for each model.
+
+
 
 # Machine-Learning-and-Probabilistic-Approach-for-Rt-and-COVID-19-Case-Forecasting
 Machine Learning and Probabilistic Approach for Rt and COVID-19 Case Forecasting
