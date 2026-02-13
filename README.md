@@ -1,3 +1,30 @@
+
+# Rt Estimation Using EpiNow2
+
+## Setup
+
+1. Set the working directory to the folder where your SC/US county-level COVID-19 data files are saved:
+```r
+   setwd("path/to/your/data/directory")
+```
+
+2. Update the **start and end dates** for the wave you want to analyze. These need to be changed in two places in the code:
+   - Data filtering step (~line 55): `date >= "2022-05-01" & date <= "2023-02-11"`
+   - Rt estimation loop (~line 155): `start_date` and `end_date` assignments
+
+3. To enable **forecasting of Rt and cases**, set the forecast horizon in the `epinow()` call (~line 136):
+```r
+   forecast = forecast_opts(horizon = 14)  # set to desired number of days (7,14,21); 0 = no forecast
+```
+
+4. After running, **save the results** as `Rt_Estimates_Initial`:
+```r
+   Rt_Estimates_Initial <- Rt_county
+   Save as csv file.
+```
+
+
+
 # Machine-Learning-and-Probabilistic-Approach-for-Rt-and-COVID-19-Case-Forecasting
 Machine Learning and Probabilistic Approach for Rt and COVID-19 Case Forecasting
 Contents
