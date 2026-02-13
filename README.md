@@ -1,4 +1,31 @@
+# Machine Learning and Probabilistic Approach for Rt and COVID-19 Case Forecasting
 
+## Contents
+
+### 1. Data
+
+- **County-Level COVID-19 Case Data:** COVID-19 daily case data at the county level in South Carolina (SC) was used for the analysis. All case data files are available at:
+  - https://github.com/nytimes/covid-19-data/blob/master/us-counties-2020.csv
+  - https://github.com/nytimes/covid-19-data/blob/master/us-counties-2021.csv
+  - https://github.com/nytimes/covid-19-data/blob/master/us-counties-2022.csv
+  - https://github.com/nytimes/covid-19-data/blob/master/us-counties-2023.csv
+
+### The Data folder contains:
+
+#### Folders
+- **Covid_Case_Data_SC_Counties/** — SC county-level COVID-19 case data.
+- **Forecast_Accuracy_Summary/** — Summary of forecast accuracy metrics across models.
+- **Forecast_Scenario-1_07_day/** — Scenario 1 forecasts with a 7-day horizon.
+- **Forecast_Scenario-1_14_day/** — Scenario 1 forecasts with a 14-day horizon.
+- **Forecast_Scenario-1_21_day/** — Scenario 1 forecasts with a 21-day horizon.
+- **Forecast_Scenario-2_07_day/** — Scenario 2 forecasts with a 7-day horizon.
+- **Forecast_Scenario-2_14_day/** — Scenario 2 forecasts with a 14-day horizon.
+- **Forecast_Scenario-2_21_day/** — Scenario 2 forecasts with a 21-day horizon.
+
+#### Files
+- **Rt_Estimates_Initial.csv** — Initial Rt estimates obtained using the EpiNow2 R package.
+- **Rt_Estimates_Smooth.csv** — Spatially smoothed Rt estimates using the INLA model.
+- **SC_county_sociodemographic_data.csv** — Sociodemographic data for SC counties used as covariates.
 # Rt Estimation Using EpiNow2
 
 ## Setup
